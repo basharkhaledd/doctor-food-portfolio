@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Doctor Food executive dashboard</title>
+  <style>
+    :root {
+      --ink: #e7eef5;
+      --muted: #93a8ba;
+      --line: #1b3a52;
+      --paper: #071422;
+      --card: #0e2438;
+      --teal: #2ec4b6;
+      --teal-soft: #5eead4;
+      --amber: #e7c27a;
+      --navy: #0b1f33;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+    }
+    .switch {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 10px 32px;
+      background: #06101b;
+      font-size: 13px;
+    }
+    .switch a {
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      border: 1px solid transparent;
+    }
+    .switch a[aria-current="page"] {
+      color: #071422;
+      background: var(--teal);
+    }
+    header {
+      background: var(--navy);
+      color: var(--ink);
+      padding: 22px 32px 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-end;
+    }
+    header p { margin: 0; letter-spacing: 0.16em; text-transform: uppercase; font-size: 12px; color: var(--teal); }
+    header h1 { margin: 4px 0 0; font-family: Georgia, "Iowan Old Style", serif; font-weight: 500; font-size: 32px; }
+    header .meta { text-align: right; font-size: 13px; line-height: 1.5; color: var(--muted); }
+    main { max-width: 1040px; margin: 0 auto; padding: 22px 22px 40px; }
+    .banner {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .banner h2 { margin: 0; font-family: Georgia, serif; font-size: 26px; font-weight: 500; }
+    .banner span {
+      background: #1a2e24;
+      color: var(--amber);
+      border: 1px solid #3d4e32;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .slicers { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .slicers article, .kpi, .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+    .slicers article { padding: 12px 14px; }
+    .slicers p, .kpi p, .panel h3 { margin: 0; color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .slicers strong { display: block; margin-top: 6px; font-size: 16px; font-weight: 600; }
+    .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .kpi { padding: 14px 14px 12px; min-height: 108px; border-top: 3px solid var(--teal); }
+    .kpi strong { display: block; margin: 8px 0 6px; font-size: 28px; color: var(--teal-soft); font-variant-numeric: tabular-nums; letter-spacing: -0.04em; }
+    .kpi span { color: var(--muted); font-size: 12px; line-height: 1.35; display: block; }
+    .grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 12px; margin-top: 12px; }
+    .panel { padding: 16px 16px 12px; }
+    .panel h3 { margin-bottom: 8px; }
+    .split { display: grid; grid-template-columns: 1fr 1.15fr; gap: 12px; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 0; }
+    td { padding: 7px 0; border-top: 1px solid var(--line); }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .bar-row { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; font-size: 14px; }
+    .goal-note { color: var(--muted); font-size: 12px; margin: 4px 0 2px; }
+    .track { height: 10px; background: #132c44; border-radius: 99px; overflow: hidden; }
+    .fill { height: 100%; background: var(--teal); border-radius: 99px; }
+    .cuisine { display: flex; height: 18px; border-radius: 99px; overflow: hidden; margin: 12px 0; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: var(--muted); }
+    .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 99px; margin-right: 6px; }
+    footer { margin-top: 14px; color: var(--muted); font-size: 12px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    svg { width: 100%; height: auto; display: block; }
+    @media (max-width: 800px) {
+      header, .switch { padding-left: 18px; padding-right: 18px; }
+      header { flex-direction: column; align-items: flex-start; }
+      header .meta { text-align: left; }
+      .kpis, .grid, .split, .slicers { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="switch" aria-label="Dashboards">
+    <a href="../">Original analytics dashboard</a>
+    <a href="./" aria-current="page">Executive dashboard</a>
+  </nav>
+  <header>
+    <div>
+      <p>Doctor Food</p>
+      <h1>Executive nutrition review</h1>
+    </div>
+    <div class="meta">12 weeks ending 2026-10-14<br />Static view of the Power BI executive report</div>
+  </header>
+  <main>
+    <div class="banner">
+      <h2>How the cohort landed against its targets</h2>
+      <span>Synthetic — not production user data</span>
+    </div>
+    <section class="slicers">
+      <article>
+        <p>Date range</p>
+        <strong>23 Jul 2026 – 14 Oct 2026</strong>
+      </article>
+      <article>
+        <p>Meal type</p>
+        <strong>All meal types</strong>
+      </article>
+    </section>
+    <section class="kpis">
+      <article class="kpi"><p>Meal items</p><strong>18,938</strong><span>Foods logged on meals</span></article>
+      <article class="kpi"><p>Calories</p><strong>5,206,786</strong><span>Already scaled to the portion</span></article>
+      <article class="kpi"><p>Protein</p><strong>302,849 g</strong><span>Sum of logged items</span></article>
+      <article class="kpi"><p>Calorie adherence</p><strong>90.3%</strong><span>Average of daily ratios on logged days</span></article>
+      <article class="kpi"><p>Protein goal</p><strong>45.3%</strong><span>Logged days at 90% of target or more</span></article>
+      <article class="kpi"><p>Catalog match</p><strong>85.9%</strong><span>Items priced from the food catalog</span></article>
+    </section>
+    <section class="grid">
+      <article class="panel">
+        <h3>Calorie and protein trend</h3>
+        <svg viewBox="0 0 680 230" role="img" aria-label="Weekly calories as bars and protein as a line"><rect x="40.0" y="184.9" width="24" height="3.1" rx="3" fill="#2EC4B6"/><rect x="88.0" y="158.4" width="24" height="29.6" rx="3" fill="#2EC4B6"/><rect x="136.0" y="131.1" width="24" height="56.9" rx="3" fill="#2EC4B6"/><rect x="184.0" y="111.0" width="24" height="77.0" rx="3" fill="#2EC4B6"/><rect x="232.0" y="100.6" width="24" height="87.4" rx="3" fill="#2EC4B6"/><rect x="280.0" y="88.5" width="24" height="99.5" rx="3" fill="#2EC4B6"/><rect x="328.0" y="66.3" width="24" height="121.7" rx="3" fill="#2EC4B6"/><rect x="376.0" y="63.0" width="24" height="125.0" rx="3" fill="#2EC4B6"/><rect x="424.0" y="51.0" width="24" height="137.0" rx="3" fill="#2EC4B6"/><rect x="472.0" y="45.4" width="24" height="142.6" rx="3" fill="#2EC4B6"/><rect x="520.0" y="16.0" width="24" height="172.0" rx="3" fill="#2EC4B6"/><rect x="568.0" y="25.1" width="24" height="162.9" rx="3" fill="#2EC4B6"/><rect x="616.0" y="113.2" width="24" height="74.8" rx="3" fill="#2EC4B6"/><polyline points="52.0,185.3 100.0,159.9 148.0,133.5 196.0,114.7 244.0,104.1 292.0,93.2 340.0,75.4 388.0,70.0 436.0,58.0 484.0,51.2 532.0,22.0 580.0,32.5 628.0,115.4" fill="none" stroke="#E7C27A" stroke-width="2.5"/><circle cx="52.0" cy="185.3" r="3.2" fill="#E7C27A"/><circle cx="100.0" cy="159.9" r="3.2" fill="#E7C27A"/><circle cx="148.0" cy="133.5" r="3.2" fill="#E7C27A"/><circle cx="196.0" cy="114.7" r="3.2" fill="#E7C27A"/><circle cx="244.0" cy="104.1" r="3.2" fill="#E7C27A"/><circle cx="292.0" cy="93.2" r="3.2" fill="#E7C27A"/><circle cx="340.0" cy="75.4" r="3.2" fill="#E7C27A"/><circle cx="388.0" cy="70.0" r="3.2" fill="#E7C27A"/><circle cx="436.0" cy="58.0" r="3.2" fill="#E7C27A"/><circle cx="484.0" cy="51.2" r="3.2" fill="#E7C27A"/><circle cx="532.0" cy="22.0" r="3.2" fill="#E7C27A"/><circle cx="580.0" cy="32.5" r="3.2" fill="#E7C27A"/><circle cx="628.0" cy="115.4" r="3.2" fill="#E7C27A"/><text x="52.0" y="210" text-anchor="middle" font-size="11" fill="#93A8BA">W30</text><text x="148.0" y="210" text-anchor="middle" font-size="11" fill="#93A8BA">W32</text><text x="244.0" y="210" text-anchor="middle" font-size="11" fill="#93A8BA">W34</text><text x="340.0" y="210" text-anchor="middle" font-size="11" fill="#93A8BA">W36</text><text x="436.0" y="210" text-anchor="middle" font-size="11" fill="#93A8BA">W38</text><text x="532.0" y="210" text-anchor="middle" font-size="11" fill="#93A8BA">W40</text><text x="628.0" y="210" text-anchor="middle" font-size="11" fill="#93A8BA">W42</text></svg>
+        <div class="legend"><span><i style="background:#2EC4B6"></i>Calories</span><span><i style="background:#E7C27A"></i>Protein</span></div>
+        <p class="goal-note">Each series uses its own scale so the protein line stays readable beside calories.</p>
+      </article>
+      <article class="panel">
+        <h3>Meal-type distribution</h3>
+        <div class="cuisine"><div style="width:29.72%;background:#2EC4B6"></div><div style="width:34.88%;background:#5EEAD4"></div><div style="width:32.25%;background:#7EB6FF"></div><div style="width:3.14%;background:#E7C27A"></div></div>
+        <div class="legend"><span><i style="background:#2EC4B6"></i>Breakfast 30%</span><span><i style="background:#5EEAD4"></i>Lunch 35%</span><span><i style="background:#7EB6FF"></i>Dinner 32%</span><span><i style="background:#E7C27A"></i>Snack 3%</span></div>
+        <p class="goal-note">Share of 18,938 meal items.</p>
+      </article>
+    </section>
+    <section class="split">
+      <article class="panel">
+        <h3>Calories by meal type</h3>
+        <div class="bar-row"><span>Lunch</span><strong>2,366,845</strong></div><div class="track"><div class="fill" style="width:100%"></div></div>
+        <div class="bar-row"><span>Dinner</span><strong>1,797,647</strong></div><div class="track"><div class="fill" style="width:75.9%"></div></div>
+        <div class="bar-row"><span>Breakfast</span><strong>964,703</strong></div><div class="track"><div class="fill" style="width:40.8%"></div></div>
+        <div class="bar-row"><span>Snack</span><strong>77,591</strong></div><div class="track"><div class="fill" style="width:3.3%"></div></div>
+      </article>
+      <article class="panel">
+        <h3>Top foods</h3>
+        <table>
+          <thead><tr><th>Food</th><th class="num">Items</th><th class="num">Calories</th></tr></thead>
+          <tbody>
+            <tr><td>Arabic Bread</td><td class="num">1,751</td><td class="num">474,907</td></tr>
+            <tr><td>Mansaf</td><td class="num">409</td><td class="num">366,830</td></tr>
+            <tr><td>Machboos</td><td class="num">398</td><td class="num">341,003</td></tr>
+            <tr><td>Kabsa</td><td class="num">374</td><td class="num">313,185</td></tr>
+            <tr><td>Mandi</td><td class="num">354</td><td class="num">282,895</td></tr>
+            <tr><td>Falafel Sandwich</td><td class="num">325</td><td class="num">248,008</td></tr>
+            <tr><td>Shawarma Chicken</td><td class="num">364</td><td class="num">200,356</td></tr>
+            <tr><td>Kabsa Rice</td><td class="num">392</td><td class="num">191,676</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+    <footer>
+      <div>Same synthetic snapshot as the original analytics page. 178 members, 7,213 meals, 1,204 catalog foods.</div>
+      <div>Sodium at 2,300 mg is a descriptive flag, not medical advice.</div>
+    </footer>
+  </main>
+</body>
+</html>

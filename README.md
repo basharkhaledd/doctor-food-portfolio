@@ -33,3 +33,12 @@ Open the published page:
 https://basharkhaledd.github.io/doctor-food-portfolio/
 
 The numbers on that page are the synthetic snapshot. They are not a live connection to an application database.
+
+
+## Executive dashboard
+
+The same synthetic snapshot is also published as an executive page: KPI cards, a weekly calorie and protein trend, meal-type distribution, and the top foods by calories.
+
+https://basharkhaledd.github.io/doctor-food-portfolio/executive/
+
+GitHub Pages cannot render a Power BI Desktop file in the browser. The `.pbix` is not in this repository. Its refresh steps contain a local Windows path, so the public page is the static presentation above, not a live connection.
